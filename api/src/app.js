@@ -100,7 +100,8 @@ app.get("/help/*", (req, res) => {
 
 /* Error needs to come last */
 app.get("*", (req, res) => {
-  res.send("My 404 page" + `${req.query}`);
+  res.send(req.params);
+  // res.send("My 404 page" + `${req.query}`);
 });
 
 app.listen(3000, () => {
