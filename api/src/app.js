@@ -27,6 +27,10 @@ app.get("", (req, res) => {
   });
 });
 
+app.get("/", (req, res) => {
+  res.send("Auxiliary default route");
+});
+
 app.get("/help", (req, res) => {
   res.render("help", {
     title: "This is the help screen dynamically",
