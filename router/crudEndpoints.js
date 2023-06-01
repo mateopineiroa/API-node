@@ -23,10 +23,16 @@ apiRoutes.get("/query", async (req, res) => {
   }
 });
 
-apiRoutes.get("/query/:id", (req, res) => {
+apiRoutes.get("/query/:id", async (req, res) => {
   const userId = req.params.id; // Gets the :id on the request url
 
-  res.send(userId);
+  try {
+    const objectFound = await readOperation({ _id: new ObjectId(userId) });
+
+    res.send(objectFound);
+  } catch {
+    res.send("Object not found");
+  }
 });
 
 apiRoutes.post("/write", async (req, res) => {
