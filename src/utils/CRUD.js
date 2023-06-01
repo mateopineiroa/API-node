@@ -20,6 +20,7 @@ const writeOperation = async (object) => {
     const result = await myColl.insertOne(object);
 
     console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    return result;
   } catch {
     console.log("");
   }
@@ -31,8 +32,6 @@ const readOperation = async (object) => {
     const myColl = myDB.collection("TestCollection");
 
     const data = await myColl.findOne(object);
-
-    console.log(data);
     return data;
   } catch {
     console.log("Query failed");
