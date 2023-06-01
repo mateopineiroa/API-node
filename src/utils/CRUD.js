@@ -12,12 +12,17 @@ const client = new MongoClient(uri, {
 });
 
 const writeOperation = async (object) => {
-  const myDB = client.db("test");
-  const myColl = myDB.collection("TestCollection");
+  try {
+    console.log(object);
+    const myDB = client.db("test");
+    const myColl = myDB.collection("TestCollection");
 
-  const result = await myColl.insertOne(object);
+    const result = await myColl.insertOne(object);
 
-  console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    console.log(`A document was inserted with the _id: ${result.insertedId}`);
+  } catch {
+    console.log("");
+  }
 };
 
 const readOperation = async (object) => {
@@ -28,12 +33,14 @@ const readOperation = async (object) => {
     const data = await myColl.findOne(object);
 
     console.log(data);
+    return data;
   } catch {
     console.log("Query failed");
+    return "Query failed";
   }
 };
 
-const updateOperation = async (object, newObject) => {
+const updateOperation = async (filter, newObject) => {
   try {
     const myDB = client.db("test");
     const myColl = myDB.collection("TestCollection");
@@ -43,11 +50,13 @@ const updateOperation = async (object, newObject) => {
       // $push: element; pushes an element into an array
       // $unset: ; removes a field
     };
-    const data = await myColl.updateOne(object, update);
 
-    console.log(data);
-  } catch {
+    const data = await myColl.updateOne(filter, update);
+
+    return data;
+  } catch (error) {
     console.log("Query failed");
+    throw error;
   }
 };
 
@@ -58,7 +67,7 @@ const deleteOperation = async (object) => {
 
     const data = await myColl.deleteOne(object);
 
-    console.log(data);
+    return data;
   } catch {
     console.log("Query failed");
   }

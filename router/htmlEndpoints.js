@@ -1,4 +1,8 @@
 const express = require("express");
+
+const weather = require("../src/utils/weather");
+const latLong = require("../src/utils/latLong");
+
 const router = express.Router();
 
 router.get("", (req, res) => {
