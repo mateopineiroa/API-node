@@ -1,4 +1,3 @@
-const fs = require("fs");
 const express = require("express");
 const {
   writeOperation,
@@ -13,11 +12,12 @@ const apiRoutes = express.Router();
 
 const upload = multer();
 
-apiRoutes.get("/", () => {
+apiRoutes.get("/", (req) => {
   res.send("The endpoint works :)");
 });
 
 apiRoutes.get("/query", async (req, res) => {
+  res.set("Cache-Control", "public, max-age=3600"); // The response is cacheable
   const params = req.query; // Gets the variables on the url
   try {
     const objectFound = await readOperation(params);
@@ -29,7 +29,8 @@ apiRoutes.get("/query", async (req, res) => {
 });
 
 apiRoutes.get("/query/:id", async (req, res) => {
-  const userId = req.params.id; // Gets the :id on the request url
+  res.set("Cache-Control", "public, max-age=3600"); // The response is cacheable
+  const userId = req.params.id; // Gets the chars on the :id part of the url
 
   try {
     const objectFound = await readOperation({ _id: new ObjectId(userId) });
@@ -41,7 +42,7 @@ apiRoutes.get("/query/:id", async (req, res) => {
 });
 
 apiRoutes.post("/write", async (req, res) => {
-  const object = req.body; // gets the object from the request
+  const object = req.body; // gets the object from the request body
 
   try {
     const result = await writeOperation(object);
@@ -68,6 +69,7 @@ apiRoutes.post("/uploadImage", upload.single("image"), async (req, res) => {
 });
 
 apiRoutes.get("/queryImage/:id", async (req, res) => {
+  res.set("Cache-Control", "public, max-age=3600"); // The response is cacheable
   const imageId = req.params.id; // Gets the :id on the request url
 
   try {
@@ -77,7 +79,8 @@ apiRoutes.get("/queryImage/:id", async (req, res) => {
       return res.status(404).json({ error: "Image not found" });
     }
 
-    /* Adds file to folder images */
+    /* WARNING: DO NOT PUSH THIS CODE UNCOMMENTED TO VERCEL. IT WILL GENERATE FILES IN THE SERVER */
+    /* Adds file to folder images. */
     // fs.writeFile("images/image.jpg", image.image.buffer, "binary", (error) => {
     //   if (error) {
     //     console.error("Error converting buffer to image:", error);
@@ -86,7 +89,7 @@ apiRoutes.get("/queryImage/:id", async (req, res) => {
     //   }
     // });
 
-    /* The format needs to adapt depending on the image received. Maybe i need to keep a field imgType? */
+    /* The format needs to adapt depending on the image received. How do i know the image type? */
     res.set("Content-Type", "image/jpeg"); // Set the appropriate Content-Type header for the image file format
     res.send(image.image.buffer); // Send the image binary data as the response
   } catch {
