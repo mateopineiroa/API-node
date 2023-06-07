@@ -22,10 +22,10 @@ const publicDirPath = path.join(__dirname, "../public");
 const viewsPath = path.join(__dirname, "../templates/views");
 
 // Create a write stream (In append mode)?
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, "../access.log"),
-  { flags: "a" }
-);
+// const accessLogStream = fs.createWriteStream(
+//   path.join(__dirname, "../access.log"),
+//   { flags: "a" }
+// );
 
 // Setup handlebars engine and views location
 app.set("view engine", "hbs");
