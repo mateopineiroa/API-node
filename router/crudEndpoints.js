@@ -12,7 +12,7 @@ const apiRoutes = express.Router();
 
 const upload = multer();
 
-apiRoutes.get("/", (req) => {
+apiRoutes.get("/", (req, res) => {
   res.send("The endpoint works :)");
 });
 
@@ -157,11 +157,11 @@ apiRoutes.get("/delete/:id", async (req, res) => {
 });
 
 apiRoutes.get("/*", (_, res) => {
-  res.send("No endpoint found :/");
+  res.send("Empty string set of routes, no endpoint found in this scope :/");
 });
 
 apiRoutes.post("/*", (_, res) => {
-  res.send("No endpoint found :/");
+  res.send("Empty string set of routes, no endpoint found in this scope :/");
 });
 
 module.exports = apiRoutes;

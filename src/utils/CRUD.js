@@ -1,4 +1,5 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const mongoose = require("mongoose");
 
 const uri =
   "mongodb+srv://mateopineiroa:099389720@testdatabase.xo1gb7q.mongodb.net/?retryWrites=true&w=majority";
@@ -10,6 +11,8 @@ const client = new MongoClient(uri, {
     deprecationErrors: true,
   },
 });
+
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const writeOperation = async (object) => {
   try {

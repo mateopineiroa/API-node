@@ -2,14 +2,20 @@ const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const morgan = require("morgan"); // Used to log the http requests history
-
+const mongooseEndpoints = require("../router/mongooseEndpoints");
 require("dotenv").config();
+const mongoose = require("mongoose");
+
 const routes = require("../router/htmlEndpoints");
 const apiRoutes = require("../router/crudEndpoints");
+const loginRoutes = require("../router/loginEndpoints");
+
+const uri =
+  "mongodb+srv://mateopineiroa:099389720@testdatabase.xo1gb7q.mongodb.net/?retryWrites=true&w=majority";
+
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app = express(); //express() initializes the app and you configure it with it's methods
-
-console.log(process.env.API_KEY);
 
 // // Define paths for Express config
 const publicDirPath = path.join(__dirname, "../public");
@@ -25,13 +31,14 @@ const accessLogStream = fs.createWriteStream(
 app.set("view engine", "hbs");
 app.set("views", viewsPath);
 
-// Setup static directory to serve
-app.use(express.static(publicDirPath));
+app.use(express.static(publicDirPath)); // Setup static directory to serve
 app.use(express.json()); // Middleware for parsing JSON data. It needs to be added to parse the body before reaching the endpoints
-// Setup the logger
-app.use(morgan("combined", { stream: accessLogStream }));
+
+app.use(morgan("combined", { stream: accessLogStream })); // Setup the logger
 app.use("/api", routes);
-app.use("", apiRoutes);
+app.use("/user", loginRoutes);
+app.use("/mongoose", mongooseEndpoints);
+app.use("", apiRoutes); // IMPORTANT: Always place the empty string base path routes last in the routing order.
 
 app.listen(3000, () => {
   console.log("Server is up in port 3000, http://localhost:3000");
