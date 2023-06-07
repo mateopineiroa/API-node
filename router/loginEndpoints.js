@@ -15,7 +15,11 @@ loginRoutes.post("/login", (req, res) => {
     name: "John Doe", // User name
   };
 
-  const token = jwt.sign(user, process.env.PRIVATE_KEY, { expiresIn: "1h" }); // This token contains user id and name.
+  const token = jwt.sign(
+    user,
+    "d770bc213d4902a0b1a24736d7c4322349b030ef0b5004f622ef4ff8ace93bec",
+    { expiresIn: "1h" }
+  ); // This token contains user id and name.
 
   res.json({
     token,

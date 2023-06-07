@@ -10,7 +10,8 @@ const routes = require("../router/htmlEndpoints");
 const apiRoutes = require("../router/crudEndpoints");
 const loginRoutes = require("../router/loginEndpoints");
 
-const uri = process.env.URI;
+const uri =
+  "mongodb+srv://mateopineiroa:099389720@testdatabase.xo1gb7q.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
