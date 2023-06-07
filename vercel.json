@@ -1,15 +1,9 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "src/app.js",
-      "use": "@vercel/node"
-    }
-  ],
   "build": {
     "env": {
-      "MONGODB_URI": "@mongodb_uri",
-      "PRIVATE_KEY": "@private_key"
+      "MONGODB_URI": "@MONGODB_URI",
+      "PRIVATE_KEY": "@PRIVATE_KEY"
     }
   },
   "routes": [
