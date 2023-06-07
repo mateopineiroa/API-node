@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
-const morgan = require("morgan"); // Used to log the http requests history
+// const morgan = require("morgan"); // Used to log the http requests history
 const mongooseEndpoints = require("../router/mongooseEndpoints");
 require("dotenv").config();
 const mongoose = require("mongoose");
@@ -33,7 +33,7 @@ app.set("views", viewsPath);
 app.use(express.static(publicDirPath)); // Setup static directory to serve
 app.use(express.json()); // Middleware for parsing JSON data. It needs to be added to parse the body before reaching the endpoints
 
-app.use(morgan("combined", { stream: accessLogStream })); // Setup the logger
+// app.use(morgan("combined", { stream: accessLogStream })); // Setup the logger
 app.use("/api", routes);
 app.use("/user", loginRoutes);
 app.use("/mongoose", mongooseEndpoints);
