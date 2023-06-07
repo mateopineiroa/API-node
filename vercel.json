@@ -3,12 +3,7 @@
   "builds": [
     {
       "src": "src/app.js",
-      "use": "@vercel/node",
-      "env": {
-        "test": "dsadsa",
-        "PRIVATE_KEY": "d770bc213d4902a0b1a24736d7c4322349b030ef0b5004f622ef4ff8ace93bec",
-        "URI": "mongodb+srv://mateopineiroa:099389720@testdatabase.xo1gb7q.mongodb.net/?retryWrites=true&w=majority"
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
