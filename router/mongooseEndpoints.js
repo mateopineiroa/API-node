@@ -1,10 +1,28 @@
-const jwt = require("jsonwebtoken");
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("../Schema/User");
 
 const mongooseEndpoints = express.Router();
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+
+  if (!authHeader) return res.sendStatus(401);
+
+  const token = authHeader && authHeader.split(" ")[1];
+  // header also can contain the alghorithm used to create the token
+  // console.log({ authHeader }); Bearer <encrypted_token>
+
+  jwt.verify(token, process.env.PRIVATE_KEY, (err, user) => {
+    if (err) return res.sendStatus(403);
+
+    req.user = user;
+
+    next();
+  });
+}
 
 /* Should stores the password as a hash salted */
 mongooseEndpoints.post("/signup", async (req, res) => {
@@ -53,36 +71,12 @@ mongooseEndpoints.post("/login", async (req, res) => {
   }
 });
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
-  // header also can contain the alghorithm used to create the token
-  // console.log({ authHeader }); Bearer <encrypted_token>
-
-  if (token == null) return res.sendStatus(401);
-
-  const decoded = jwt.verify(token, process.env.PRIVATE_KEY, (err, user) => {
-    if (err) return res.sendStatus(403);
-
-    req.user = user;
-
-    next();
-  });
-  console.log(decoded);
-}
-
-mongooseEndpoints.post("/addItem", async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (token == null) return res.sendStatus(401);
-
+mongooseEndpoints.post("/addItem", authenticateToken, async (req, res) => {
   const item = req.body;
+  const tokenData = req.user;
 
   try {
-    const decoded = jwt.verify(token, process.env.PRIVATE_KEY);
-
-    const user = await User.findOne({ username: decoded.username });
+    const user = await User.findOne({ username: tokenData.username });
 
     if (!user.items) user.items = [];
 
@@ -97,17 +91,13 @@ mongooseEndpoints.post("/addItem", async (req, res) => {
   }
 });
 
-mongooseEndpoints.get("/items", async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-
-  if (token == null) return res.sendStatus(401);
+mongooseEndpoints.get("/items", authenticateToken, async (req, res) => {
+  const tokenData = req.user;
 
   try {
-    const decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    const user = await User.findOne({ username: tokenData.username });
 
-    const user = await User.findOne({ username: decoded.username });
-
-    res.json({ items: user.items });
+    res.json(user.items);
   } catch (error) {
     console.log(error);
     res.status(401).json({ message: "Invalid token" });
