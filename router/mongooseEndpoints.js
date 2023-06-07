@@ -15,17 +15,13 @@ function authenticateToken(req, res, next) {
   // header also can contain the alghorithm used to create the token
   // console.log({ authHeader }); Bearer <encrypted_token>
 
-  jwt.verify(
-    token,
-    "d770bc213d4902a0b1a24736d7c4322349b030ef0b5004f622ef4ff8ace93bec",
-    (err, user) => {
-      if (err) return res.sendStatus(403);
+  jwt.verify(token, process.env.PRIVATE_KEY, (err, user) => {
+    if (err) return res.sendStatus(403);
 
-      req.user = user;
+    req.user = user;
 
-      next();
-    }
-  );
+    next();
+  });
 }
 
 /* Should stores the password as a hash salted */
@@ -64,13 +60,9 @@ mongooseEndpoints.post("/login", async (req, res) => {
 
     const tokenData = { username };
 
-    const token = jwt.sign(
-      tokenData,
-      "d770bc213d4902a0b1a24736d7c4322349b030ef0b5004f622ef4ff8ace93bec",
-      {
-        expiresIn: "1h",
-      }
-    );
+    const token = jwt.sign(tokenData, process.env.PRIVATE_KEY, {
+      expiresIn: "1h",
+    });
 
     res.json({ message: "Logged in successfully", token });
   } catch (error) {
