@@ -5,6 +5,7 @@ const express = require("express");
 const mongooseEndpoints = require("../router/mongooseEndpoints");
 require("dotenv").config();
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const routes = require("../router/htmlEndpoints");
 const apiRoutes = require("../router/crudEndpoints");
@@ -32,6 +33,7 @@ app.set("views", viewsPath);
 
 app.use(express.static(publicDirPath)); // Setup static directory to serve
 app.use(express.json()); // Middleware for parsing JSON data. It needs to be added to parse the body before reaching the endpoints
+app.use(cors());
 
 // app.use(morgan("combined", { stream: accessLogStream })); // Setup the logger
 app.use("/api", routes);
