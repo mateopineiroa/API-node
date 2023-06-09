@@ -33,7 +33,13 @@ mongooseEndpoints.post("/signup", async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ message: "User created successfully" });
+    const tokenData = { username };
+
+    const token = jwt.sign(tokenData, process.env.PRIVATE_KEY, {
+      expiresIn: "1h",
+    });
+
+    res.status(200).json({ message: "User created successfully", token });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Error creating user" });
