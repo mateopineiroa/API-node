@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("../Schema/User");
+const Message = require("../Schema/Message");
 
 const mongooseEndpoints = express.Router();
 
@@ -104,6 +105,30 @@ mongooseEndpoints.get("/items", authenticateToken, async (req, res) => {
     const user = await User.findOne({ username: tokenData.username });
 
     res.json(user.items);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Invalid token" });
+  }
+});
+
+mongooseEndpoints.get("/user", authenticateToken, async (req, res) => {
+  const tokenData = req.user;
+
+  try {
+    res.json(tokenData.username);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({ message: "Invalid token" });
+  }
+});
+
+mongooseEndpoints.get("/messages", authenticateToken, async (req, res) => {
+  const tokenData = req.user;
+
+  try {
+    const messages = await Message.find({}).exec();
+    console.log(messages);
+    res.json(messages);
   } catch (error) {
     console.log(error);
     res.status(401).json({ message: "Invalid token" });
